@@ -1,3 +1,4 @@
+#include <vector>
 #ifndef Event_h
 #define Event_h
 
@@ -11,7 +12,6 @@ public:
     double mom_x, mom_y, mom_z;
   };
 
-  typedef const Particle *part_ptr;
   // add a particle to the event
   void add(float px, float py, float pz, int charge);
 
@@ -25,9 +25,9 @@ public:
 private:
   int id;
   float decay_x, decay_y, decay_z;
-  unsigned int no_particles;
-  const Particle **particles;
-  const unsigned int max_particles = 10;
+  // unsigned int no_particles;
+  std::vector<Particle *> particles;
+  // const unsigned int max_particles = 10;
 };
 
 #endif

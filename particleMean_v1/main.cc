@@ -104,9 +104,10 @@ double mass(const Event *event) {
   inv_mass_Lambda0 =
       inv_mass(mom_x_sum, mom_y_sum, mom_z_sum, energy_sum_Lambda0);
 
-  if (abs(inv_mass_K0 - massK0) < abs(inv_mass_Lambda0 - massLambda0)) {
+  if (fabs(inv_mass_K0 - massK0) < fabs(inv_mass_Lambda0 - massLambda0)) {
     return inv_mass_K0;
-  } else if (abs(inv_mass_K0 - massK0) > abs(inv_mass_Lambda0 - massLambda0)) {
+  } else if (fabs(inv_mass_K0 - massK0) >
+             fabs(inv_mass_Lambda0 - massLambda0)) {
     return inv_mass_Lambda0;
   } else {
     return -1;
@@ -169,7 +170,7 @@ void clear(const Event *event) {
   for (int i = 0; i < event->no_particles; i++) {
     delete event->particles[i];
   }
-  delete event->particles;
+  delete[] event->particles;
   delete event;
   return;
 }

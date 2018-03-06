@@ -37,6 +37,6 @@ the "dump" function.
 
 ********* final list of functions *********
 
-main                   to do
-read                   to do
-dump                   to do
+main                   done
+read                   done
+dump                   done

@@ -4,7 +4,7 @@
 #include "Utilities.h"
 #include <fstream>
 #include <iostream>
-#include <math.h>
+#include <string>
 
 using namespace std;
 
@@ -14,8 +14,8 @@ void dump(const Event *event);
 double mass(const Event *event);
 
 int main(int argc, char *argv[]) {
-
-  ifstream file(argv[1]);
+  string input_file = argv[1];
+  ifstream file(input_file);
   MassMean *K0 = new MassMean(0.490, 0.505);
   MassMean *Lambda0 = new MassMean(1.114, 1.118);
   // loop over events
@@ -112,11 +112,11 @@ double mass(const Event *event) {
   inv_mass_Lambda0 =
       Utilities::inv_mass(mom_x_sum, mom_y_sum, mom_z_sum, energy_sum_Lambda0);
 
-  if (fabs(inv_mass_K0 - constants.get_massK0()) <
-      fabs(inv_mass_Lambda0 - constants.get_massLambda0())) {
+  if (abs(inv_mass_K0 - constants.get_massK0()) <
+      abs(inv_mass_Lambda0 - constants.get_massLambda0())) {
     return inv_mass_K0;
-  } else if (fabs(inv_mass_K0 - constants.get_massK0()) >
-             fabs(inv_mass_Lambda0 - constants.get_massLambda0())) {
+  } else if (abs(inv_mass_K0 - constants.get_massK0()) >
+             abs(inv_mass_Lambda0 - constants.get_massLambda0())) {
     return inv_mass_Lambda0;
   } else {
     return -1;
