@@ -1,37 +1,35 @@
+
+
 #ifndef EventReadFromFile_h
 #define EventReadFromFile_h
 
 #include "EventSource.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 class Event;
 
-class EventReadFromFile: public EventSource {
+class EventReadFromFile : public EventSource {
 
- public:
-
+public:
   // read data from file "name"
-  EventReadFromFile( const std::string& name );
+  EventReadFromFile(const std::string &name);
   virtual ~EventReadFromFile();
 
- private:
-
+private:
   // dummy copy constructor and assignment to prevent unadvertent copy
-  EventReadFromFile           ( const EventReadFromFile& x );
-  EventReadFromFile& operator=( const EventReadFromFile& x );
+  EventReadFromFile(const EventReadFromFile &x);
+  EventReadFromFile &operator=(const EventReadFromFile &x);
 
   // get an event
-  virtual const Event* get();
+  virtual const Event *get();
 
   // input file
-  std::ifstream* file;
+  std::ifstream *file;
 
   // read and event
-  const Event* readFile();
-
+  const Event *readFile();
 };
 
 #endif
-

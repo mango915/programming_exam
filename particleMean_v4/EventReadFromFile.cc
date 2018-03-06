@@ -2,55 +2,41 @@
 
 #include "Event.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 
 using namespace std;
 
 // read data from file "name"
-EventReadFromFile::EventReadFromFile( const string& name ) {
-  file = new ifstream( name.c_str(), ios::binary );
+EventReadFromFile::EventReadFromFile(const string &name) {
+  file = new ifstream(name.c_str(), ios::binary);
 }
 
-
-EventReadFromFile::~EventReadFromFile() {
-  delete file;
-}
-
+EventReadFromFile::~EventReadFromFile() { delete file; }
 
 // get an event
-const Event* EventReadFromFile::get() {
-  return readFile();
-}
-
+const Event *EventReadFromFile::get() { return readFile(); }
 
 // read an event
-const Event* EventReadFromFile::readFile() {
+const Event *EventReadFromFile::readFile() {
 
-  // event pointer and identifier
-  Event* ev;
-  int i;
-
-  // try to read input file
-  // on success create new event
-  if ( file->read( reinterpret_cast<char*>( &i ),
-                                    sizeof(  i ) ) ) ev = new Event( i );
-  // on failure return null pointer
-  else return 0;
-
-  // read number of points
-  int n;
-  file->read( reinterpret_cast<char*>( &n ), sizeof( n ) );
-
-  // read and store all points
-  int e;
-  for ( i = 0; i < n; ++i ) {
-    file->read( reinterpret_cast<char*>( &e ), sizeof( e ) );
-    ev->add( e );
+  int id_temp;
+  float decay_x_temp, decay_y_temp, decay_z_temp;
+  int no_particles;
+  if (!(*file >> id_temp)) {
+    return 0;
   }
 
-  return ev;
+  *file >> decay_x_temp >> decay_y_temp >> decay_z_temp >> no_particles;
+  Event *event = new Event(id_temp, decay_x_temp, decay_y_temp, decay_z_temp);
 
+  for (int i = 0; i < no_particles; i++) {
+    int charge;
+    float mom_x_temp, mom_y_temp, mom_z_temp;
+    *file >> charge >> mom_x_temp >> mom_y_temp >> mom_z_temp;
+    event->add(mom_x_temp, mom_y_temp, mom_z_temp, charge);
+  }
+
+  return event;
 }
-

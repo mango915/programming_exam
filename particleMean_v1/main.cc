@@ -38,6 +38,7 @@ void clear(const Event *event);
 
 int main(int argc, char const *argv[]) {
   ifstream file(argv[1]);
+
   const Event *event;
   int no_accepted_events = 0;
   double sum_inv_masses = 0, sum_squares_inv_masses = 0;

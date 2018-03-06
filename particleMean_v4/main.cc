@@ -1,72 +1,66 @@
+#include "AnalysisSteering.h"
 #include "Constants.h"
 #include "Event.h"
+#include "EventDump.h"
+#include "EventReadFromFile.h"
+#include "EventSim.h"
+#include "EventSource.h"
 #include "MassMean.h"
+#include "ParticleMass.h"
 #include "Utilities.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 using namespace std;
 
 Constants constants = Constants::instance();
-const Event *read(ifstream &file);
-void dump(const Event *event);
 double mass(const Event *event);
 
 int main(int argc, char *argv[]) {
-  string input_file = argv[1];
-  ifstream file(input_file);
-  MassMean *K0 = new MassMean(0.490, 0.505);
-  MassMean *Lambda0 = new MassMean(1.114, 1.118);
-  // loop over events
-  const Event *ev;
-  while ((ev = read(file)) != 0) {
-    K0->add(*ev);
-    Lambda0->add(*ev);
-    delete ev;
-  }
-  // compute results
-  K0->compute();
-  Lambda0->compute();
-  cout << K0->nEvents() << " " << K0->mMean() << " " << K0->mRMS() << endl;
-  cout << Lambda0->nEvents() << " " << Lambda0->mMean() << " "
-       << Lambda0->mRMS() << endl;
-  return 0;
-}
+  EventSource *es;
+  const string first_argument = argv[1];
 
-const Event *read(ifstream &file) {
-  int id_temp;
-  float decay_x_temp, decay_y_temp, decay_z_temp;
-  int no_particles;
-  if (!(file >> id_temp)) {
+  if (first_argument == "input") {
+    const string file_input = argv[2];
+    es = new EventReadFromFile(file_input);
+  } else if (first_argument == "sim") {
+
+    const string nevt = argv[2];
+    const string seed = (argc > 3 ? argv[3] : "1");
+    stringstream sstr;
+    unsigned int n;
+    sstr.str(nevt);
+    sstr >> n;
+    sstr.clear();
+    unsigned int s;
+    sstr.str(seed);
+    sstr >> s;
+    es = new EventSim(n, s);
+  } else {
+    cout << "invalid keyword" << endl;
     return 0;
   }
+  vector<AnalysisSteering *> aList;
+  aList.push_back(new EventDump);
+  aList.push_back(new ParticleMass);
+  int l = aList.size();
+  int i;
+  for (i = 0; i < l; ++i)
+    aList[i]->beginJob();
 
-  file >> decay_x_temp >> decay_y_temp >> decay_z_temp >> no_particles;
-  Event *event = new Event(id_temp, decay_x_temp, decay_y_temp, decay_z_temp);
-
-  for (int i = 0; i < no_particles; i++) {
-    int charge;
-    float mom_x_temp, mom_y_temp, mom_z_temp;
-    file >> charge >> mom_x_temp >> mom_y_temp >> mom_z_temp;
-    event->add(mom_x_temp, mom_y_temp, mom_z_temp, charge);
+  const Event *ev;
+  while ((ev = es->get()) != 0) {
+    for (i = 0; i < l; ++i) {
+      aList[i]->process(*ev);
+    }
+    delete ev;
   }
+  for (i = 0; i < l; ++i)
+    aList[i]->endJob();
 
-  return event;
-}
-
-void dump(const Event *event) {
-  cout << event->eventNumber() << endl;
-  cout << event->x() << " " << event->y() << " " << event->z() << endl;
-  cout << event->nParticles() << endl;
-
-  for (int i = 0; i < event->eventNumber(); i++) {
-    cout << event->particle(i)->charge << " " << event->particle(i)->mom_x
-         << " " << event->particle(i)->mom_y << " " << event->particle(i)->mom_z
-         << endl;
-  }
-
-  return;
+  return 0;
 }
 
 double mass(const Event *event) {
