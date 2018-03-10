@@ -1,12 +1,12 @@
-#include <vector>
 #ifndef Event_h
 #define Event_h
-
+#include <vector>
 class Event {
 
 public:
   Event(int n, float x, float y, float z);
   ~Event();
+
   struct Particle {
     int charge;
     double mom_x, mom_y, mom_z;
@@ -25,9 +25,7 @@ public:
 private:
   int id;
   float decay_x, decay_y, decay_z;
-  // unsigned int no_particles;
   std::vector<Particle *> particles;
-  // const unsigned int max_particles = 10;
 };
 
 #endif

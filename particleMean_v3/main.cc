@@ -1,124 +1,40 @@
-#include "Constants.h"
-#include "Event.h"
-#include "MassMean.h"
-#include "Utilities.h"
+#include "Event.h"     //Event objects
+#include "Functions.h" // mass, read and dump functions
+#include "MassMean.h"  // statistical handling of Events
 #include <fstream>
 #include <iostream>
+#include <math.h>
 #include <string>
 
 using namespace std;
 
-Constants constants = Constants::instance();
-const Event *read(ifstream &file);
-void dump(const Event *event);
-double mass(const Event *event);
-
 int main(int argc, char *argv[]) {
+
+  // input file
   string input_file = argv[1];
   ifstream file(input_file.c_str());
+
+  // two decays hypothesis
   MassMean *K0 = new MassMean(0.490, 0.505);
   MassMean *Lambda0 = new MassMean(1.114, 1.118);
-  // loop over events
+
   const Event *ev;
+
+  // loop over events, adding them to the two hypothesis
   while ((ev = read(file)) != 0) {
     K0->add(*ev);
     Lambda0->add(*ev);
     delete ev;
   }
+
   // compute results
   K0->compute();
   Lambda0->compute();
+
+  // dump the results
   cout << K0->nEvents() << " " << K0->mMean() << " " << K0->mRMS() << endl;
   cout << Lambda0->nEvents() << " " << Lambda0->mMean() << " "
        << Lambda0->mRMS() << endl;
+
   return 0;
-}
-
-const Event *read(ifstream &file) {
-  int id_temp;
-  float decay_x_temp, decay_y_temp, decay_z_temp;
-  int no_particles;
-  if (!(file >> id_temp)) {
-    return 0;
-  }
-
-  file >> decay_x_temp >> decay_y_temp >> decay_z_temp >> no_particles;
-  Event *event = new Event(id_temp, decay_x_temp, decay_y_temp, decay_z_temp);
-
-  for (int i = 0; i < no_particles; i++) {
-    int charge;
-    float mom_x_temp, mom_y_temp, mom_z_temp;
-    file >> charge >> mom_x_temp >> mom_y_temp >> mom_z_temp;
-    event->add(mom_x_temp, mom_y_temp, mom_z_temp, charge);
-  }
-
-  return event;
-}
-
-void dump(const Event *event) {
-  cout << event->eventNumber() << endl;
-  cout << event->x() << " " << event->y() << " " << event->z() << endl;
-  cout << event->nParticles() << endl;
-
-  for (int i = 0; i < event->eventNumber(); i++) {
-    cout << event->particle(i)->charge << " " << event->particle(i)->mom_x
-         << " " << event->particle(i)->mom_y << " " << event->particle(i)->mom_z
-         << endl;
-  }
-
-  return;
-}
-
-double mass(const Event *event) {
-  int no_positive = 0, no_negative = 0;
-  double mom_x_sum = 0, mom_y_sum = 0, mom_z_sum = 0;
-  double energy_sum_K0 = 0, energy_sum_Lambda0 = 0;
-  double inv_mass_K0 = 0, inv_mass_Lambda0 = 0;
-  if (event->nParticles() != 2) {
-    return -1;
-  }
-  for (int i = 0; i < event->nParticles(); i++) {
-    if (event->particle(i)->charge == +1) {
-      ++no_positive;
-    } else if (event->particle(i)->charge == -1) {
-      ++no_negative;
-    } else {
-      return -1;
-    }
-    mom_x_sum += event->particle(i)->mom_x;
-    mom_y_sum += event->particle(i)->mom_y;
-    mom_z_sum += event->particle(i)->mom_z;
-    energy_sum_K0 +=
-        Utilities::energy(event->particle(i)->mom_x, event->particle(i)->mom_y,
-                          event->particle(i)->mom_z, constants.get_massPion());
-    if (event->particle(i)->charge == -1) {
-      energy_sum_Lambda0 += Utilities::energy(
-          event->particle(i)->mom_x, event->particle(i)->mom_y,
-          event->particle(i)->mom_z, constants.get_massPion());
-    } else if (event->particle(i)->charge == +1) {
-      energy_sum_Lambda0 += Utilities::energy(
-          event->particle(i)->mom_x, event->particle(i)->mom_y,
-          event->particle(i)->mom_z, constants.get_massProton());
-    } else {
-      return -1;
-    }
-  }
-
-  if ((no_positive != 1) || (no_negative != 1)) {
-    return -1;
-  }
-  inv_mass_K0 =
-      Utilities::inv_mass(mom_x_sum, mom_y_sum, mom_z_sum, energy_sum_K0);
-  inv_mass_Lambda0 =
-      Utilities::inv_mass(mom_x_sum, mom_y_sum, mom_z_sum, energy_sum_Lambda0);
-
-  if (abs(inv_mass_K0 - constants.get_massK0()) <
-      abs(inv_mass_Lambda0 - constants.get_massLambda0())) {
-    return inv_mass_K0;
-  } else if (abs(inv_mass_K0 - constants.get_massK0()) >
-             abs(inv_mass_Lambda0 - constants.get_massLambda0())) {
-    return inv_mass_Lambda0;
-  } else {
-    return -1;
-  }
 }

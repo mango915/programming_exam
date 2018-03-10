@@ -1,8 +1,8 @@
-#include "Event.h"
 #include "MassMean.h"
 #include "ParticleMass.h"
 #include <iostream>
 #include <math.h>
+
 using namespace std;
 
 ParticleMass::ParticleMass() {}
@@ -18,6 +18,7 @@ void ParticleMass::beginJob() {
 
 void ParticleMass::endJob() {
 
+  // statistic and dump results
   int n = pList.size();
   for (int i = 0; i < n; ++i) {
     MassMean *massmean = pList[i];
@@ -29,8 +30,8 @@ void ParticleMass::endJob() {
   return;
 }
 
+// loop over energy distributions and pass event to each of them
 void ParticleMass::process(const Event &ev) {
-  // loop over energy distributions and pass event to each of them
   unsigned int n = pList.size();
   unsigned int i;
   for (i = 0; i < n; ++i)

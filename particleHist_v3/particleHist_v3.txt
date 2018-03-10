@@ -8,9 +8,8 @@ Take the following from "braggPlot_v3":
 - "AnalysisFactory.h,cc".
 
 ***
-Modify "EventDump.h,cc" and "ParticleMass.h,cc" taking "braggPlot_v3" as 
-reference:
-- add an "AnalysisInfo*" as parameter to the constructor, and use it to 
+Modify "EventDump.h,cc" and "ParticleMass.h,cc" taking "braggPlot_v3" as reference:
+- add an "AnalysisInfo*" as parameter to the constructor, and use it to
   initialize the "AnalysisSteering" base,
 - add a concrete Factory class and object, as in braggPlot_v3,
 - get from the "AnalysisInfo" object the name of the output ROOT file

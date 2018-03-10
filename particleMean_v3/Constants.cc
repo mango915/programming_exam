@@ -6,9 +6,9 @@ Constants::Constants()
 
 Constants::~Constants() {}
 
-Constants Constants::instance() {
-  Constants *constants = new Constants;
-  return *constants;
+Constants *Constants::instance() {
+  static Constants *constants = new Constants;
+  return constants;
 }
 
 const double Constants::get_massPion() { return massPion; }

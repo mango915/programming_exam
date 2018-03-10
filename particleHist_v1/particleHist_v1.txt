@@ -21,15 +21,15 @@ In "MassMean.h,cc"
 ***
 In "ParticleMass.cc":
 - implement the function "pCreate" taking 3 arguments, one string and min-max
-  masses; use the name as name for "TH1F" and min-max masses 
+  masses; use the name as name for "TH1F" and min-max masses
   to create the "MassMean" object; store the pointers of the objects;
-- in "beginJob" replace the direct creation of "MassMean" object with 
+- in "beginJob" replace the direct creation of "MassMean" object with
   calls to "pCreate" for the 2 decay modes (use 0.495-0.500 and
   1.115-1.116 as ranges);
-- in "endJob" loop over the Particle objects and for each one 
+- in "endJob" loop over the Particle objects and for each one
   get the event number, mean and rms masses and printout them, then
   save the histogram to file;
-- in "process" loop over the ParticleMass objects, call the 
+- in "process" loop over the ParticleMass objects, call the
   "add" function for each "MassMean" object and fill the histogram
   with the invariant mass for the accepted events.
   Do not worry about multiple calls to "mass" function for the same event.

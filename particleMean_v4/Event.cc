@@ -1,5 +1,5 @@
 #include "Event.h"
-#include <iostream>
+
 Event::Event(int n, float x, float y, float z)
     : id(n), decay_x(x), decay_y(y), decay_z(z) {
   particles.reserve(10);
@@ -7,6 +7,7 @@ Event::Event(int n, float x, float y, float z)
 
 Event::~Event() { particles.clear(); }
 
+// add a particle to the Event
 void Event::add(float px, float py, float pz, int charge) {
   if (particles.size() == 10) {
     return;
@@ -20,6 +21,7 @@ void Event::add(float px, float py, float pz, int charge) {
   return;
 }
 
+// getting private data
 int Event::eventNumber() const { return id; }
 float Event::x() const { return decay_x; };
 float Event::y() const { return decay_y; };
