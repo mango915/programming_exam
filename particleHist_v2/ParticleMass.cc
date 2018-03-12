@@ -3,6 +3,7 @@
 #include "ParticleMass.h"
 #include "TFile.h"
 #include "TH1F.h"
+#include <iostream>
 #include <math.h>
 
 using namespace std;
@@ -33,9 +34,8 @@ void ParticleMass::endJob() {
     MassMean *mMean = pList[i]->mMean;
     TH1F *hMean = pList[i]->hMean;
     mMean->compute();
-    double mean = mMean->mMean();
-    double rms = mMean->mRMS();
-    hMean->Fill(mean, rms);
+    cout << mMean->nEvents() << "  " << mMean->mMean() << "  " << mMean->mRMS()
+         << endl;
     hMean->Write();
   }
 
@@ -52,8 +52,8 @@ void ParticleMass::process(const Event &ev) {
   unsigned int n = pList.size();
   unsigned int i;
   for (i = 0; i < n; ++i) {
-    pList[i]->mMean->add(ev);
-    pList[i]->hMean->Fill(mass(&ev));
+    if (pList[i]->mMean->add(ev))
+      pList[i]->hMean->Fill(mass(&ev));
   }
   return;
 }

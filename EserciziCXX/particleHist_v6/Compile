@@ -1,0 +1,13 @@
+parameters:
+mass : for compute masses
+time : for compute times
+plot : name for root file
+input : file input
+sim : simulation
+dump : dump on screen
+range_file : parameters for masses
+fit_file : parameters for times
+
+es:
+
+./runAll input ../particle_events.txt mass time plot hist.root range_file massRanges fit_file particleFitters

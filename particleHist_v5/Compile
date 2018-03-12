@@ -1,0 +1,15 @@
+compile:
+c++ -Wall -I. `root-config --cflags` -I ../util/include -o main *cc `root-config --libs`
+
+run:
+./main
+
+parameters:
+mass : for compute masses
+time : for compute times
+plot : name for root file
+input : file input
+sim : simulation
+dump : dump on screen
+range_file : parameters for masses
+fit_file : parameters for times

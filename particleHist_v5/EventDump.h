@@ -1,7 +1,7 @@
 #ifndef EventDump_h
 #define EventDump_h
 
-#include "../util/include/ActiveObserver.h"
+#include "ActiveObserver.h"
 #include "AnalysisSteering.h"
 
 class Event;

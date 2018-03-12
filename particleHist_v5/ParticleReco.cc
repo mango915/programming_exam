@@ -84,13 +84,13 @@ void ParticleReco::update(const Event &event) {
   return;
 }
 
-float ParticleReco::totalEnergy() {
+double ParticleReco::totalEnergy() {
   // check for new event and return result
   reco->check();
   return energy;
 }
 
-float ParticleReco::invariantMass() {
+double ParticleReco::invariantMass() {
   // check for new event and return result
   reco->check();
   return mass;

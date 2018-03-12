@@ -3,8 +3,8 @@
 
 #include "Event.h"
 
-#include "../util/include/LazyObserver.h"
-#include "../util/include/Singleton.h"
+#include "LazyObserver.h"
+#include "Singleton.h"
 
 class ProperTime : public Singleton<ProperTime>, public LazyObserver<Event> {
 

@@ -1,4 +1,4 @@
-#include "../util/include/Dispatcher.h"
+#include "Dispatcher.h"
 #include "Event.h"
 #include "EventSource.h"
 

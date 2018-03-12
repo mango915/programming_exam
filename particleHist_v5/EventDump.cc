@@ -1,4 +1,4 @@
-#include "../util/include/ActiveObserver.h"
+#include "ActiveObserver.h"
 #include "AnalysisFactory.h"
 #include "Event.h"
 #include "EventDump.h"
